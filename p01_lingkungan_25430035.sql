@@ -1,4 +1,7 @@
-CREATE DATABASE kopma_123
+CREATE DATABASE IF NOT EXISTS kopma_123
 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'mhs_123'@'localhost' IDENTIFIED BY '<computer_fight>';
-GRANT ALL PRIVILEGES ON kopma_123.* TO 'mhs_123'@'localhost';
+
+CREATE USER IF NOT EXISTS 'tamu_123'@'localhost'
+IDENTIFIED BY 'password123';
+
+GRANT SELECT ON kopma_123.* TO 'tamu_123'@'localhost';
