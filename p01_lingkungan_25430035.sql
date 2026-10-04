@@ -1,7 +1,10 @@
-CREATE DATABASE IF NOT EXISTS kopma_123
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE USER IF NOT EXISTS 'tamu_123'@'localhost'
-IDENTIFIED BY 'password123';
-
-GRANT SELECT ON kopma_123.* TO 'tamu_123'@'localhost';
+-- p01_lingkungan_25430035.sql NIM 25430035
+CREATE DATABASE IF NOT EXISTS kopma_035 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS klinik_035 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS 'mhs_035'@'localhost' IDENTIFIED BY 'password123';
+CREATE USER IF NOT EXISTS 'dev_035'@'localhost' IDENTIFIED BY 'password123';
+CREATE USER IF NOT EXISTS 'tamu_035'@'localhost' IDENTIFIED BY 'password123';
+GRANT ALL PRIVILEGES ON kopma_035.* TO 'mhs_035'@'localhost';
+GRANT ALL PRIVILEGES ON klinik_035.* TO 'dev_035'@'localhost';
+GRANT SELECT ON kopma_035.* TO 'tamu_035'@'localhost';
+FLUSH PRIVILEGES;
