@@ -48,7 +48,9 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 \## 3. Dokumen sumber yang dianalisis
 
+
 !\[Tugas Mandiri](screenshot/TugasMandiri\_Gambar.png)
+
 
 
 
