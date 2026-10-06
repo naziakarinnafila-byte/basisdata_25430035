@@ -1,8 +1,8 @@
-\# Dokumen Kebutuhan Data - Koperasi Mahasiswa Sejahtera (fiktif)
+# Dokumen Kebutuhan Data - Koperasi Mahasiswa Sejahtera (fiktif)
 
 
 
-\## 1. Latar belakang dan aktivitas organisasi
+## 1. Latar belakang dan aktivitas organisasi
 
 Kopma menjual alat tulis, makanan ringan, dan minuman di lingkungan kampus. Pembeli dapat berupa anggota atau umum. Mahasiswa mendaftar sebagai anggota dengan NIM, nama, program studi, dan nomor HP, lalu memperoleh nomor anggota berformat A-xxxx. Anggota aktif memperoleh diskon 5% untuk setiap nota.
 
@@ -12,7 +12,7 @@ Kutipan wawancara. Ketua: “Harga barang sering naik, jadi kami bingung saat me
 
 
 
-\## 2. Aktor dan proses bisnis
+## 2. Aktor dan proses bisnis
 
 |Kode|Proses bisnis|Aktor|Pemicu|
 |-|-|-|-|
@@ -24,15 +24,15 @@ Kutipan wawancara. Ketua: “Harga barang sering naik, jadi kami bingung saat me
 
 
 
-\## 3. Dokumen sumber yang dianalisis
+## 3. Dokumen sumber yang dianalisis
 
 
-!\[Percobaan](screenshot/Percobaan\_Gambar.png)
+![Percobaan](screenshot/Percobaan_Gambar.png)
 
 
 
 
-\## 4. Entitas kandidat dan elemen data
+## 4. Entitas kandidat dan elemen data
 
 |Entitas kandidat|Elemen data utama|Sumber|
 |-|-|-|
@@ -46,7 +46,7 @@ Kutipan wawancara. Ketua: “Harga barang sering naik, jadi kami bingung saat me
 
 
 
-\## 5. Aturan bisnis
+## 5. Aturan bisnis
 
 |Kode|Aturan Bisnis|
 |-|-|
@@ -61,7 +61,7 @@ Kutipan wawancara. Ketua: “Harga barang sering naik, jadi kami bingung saat me
 
 
 
-\## 6. Kebutuhan informasi
+## 6. Kebutuhan informasi
 
 |Kode|Kebutuhan informasi|Data yang diperlukan|
 |-|-|-|
@@ -74,7 +74,7 @@ Kutipan wawancara. Ketua: “Harga barang sering naik, jadi kami bingung saat me
 
 
 
-\## 7. Matriks CRUD
+## 7. Matriks CRUD
 
 |Proses|Anggota|Barang|Penjualan|Detail|Pemasok|Pembelian|
 |-|-|-|-|-|-|-|
@@ -86,28 +86,28 @@ Kutipan wawancara. Ketua: “Harga barang sering naik, jadi kami bingung saat me
 
 
 
-\## 8. Kamus data awal
+## 8. Kamus data awal
 
 |Elemen|Arti|Contoh|Aturan|Penanggung jawab|
 |-|-|-|-|-|
-|no\_anggota|Nomor anggota koperasi|A-0457|Unik, format A-4 digit|Ketua|
-|nim\_anggota|NIM anggota|2301010123|Unik, 10 digit|Ketua|
-|no\_hp\_anggota<br />|<br />Nomor HP anggota<br />|<br />0812xxxx<br />|Data pribadi, akses terbatas|Ketua|
-|no\_nota\_penjualan|<br />Nomor nota penjualan<br />|PJ-2609-0142|Unik per nota|Kasir|
-|harga\_satuan\_detail\_penjualan|<br />Harga jual saat transaksi<br />|4000|Bilangan bulat ≥ 0 (rupiah)|Kasir|
-|stok\_barang|Jumlah barang tersedia|35|Bilangan bulat ≥ 0 (AB-03)|Petugas gudang|
+|no_anggota|Nomor anggota koperasi|A-0457|Unik, format A-4 digit|Ketua|
+|nim_anggota|NIM anggota|2301010123|Unik, 10 digit|Ketua|
+|no_hp_anggota<br />|<br />Nomor HP anggota<br />|<br />0812xxxx<br />|Data pribadi, akses terbatas|Ketua|
+|no_nota_penjualan|<br />Nomor nota penjualan<br />|PJ-2609-0142|Unik per nota|Kasir|
+|harga_satuan_detail_penjualan|<br />Harga jual saat transaksi<br />|4000|Bilangan bulat ≥ 0 (rupiah)|Kasir|
+|stok_barang|Jumlah barang tersedia|35|Bilangan bulat ≥ 0 (AB-03)|Petugas gudang|
 
 
 
 
 
-\## 9. Kebutuhan non-fungsional data
+## 9. Kebutuhan non-fungsional data
 
-Kebutuhan non-fungsional dicatat singkat: perkiraan ±150 nota per hari, data transaksi disimpan minimal lima tahun, dan nomor HP anggota hanya boleh dilihat oleh ketua. Pembatasan akses data pribadi seperti ini sejalan dengan kewajiban pengendali data dalam Undang-Undang Pelindungan Data Pribadi \[17].
+Kebutuhan non-fungsional dicatat singkat: perkiraan ±150 nota per hari, data transaksi disimpan minimal lima tahun, dan nomor HP anggota hanya boleh dilihat oleh ketua. Pembatasan akses data pribadi seperti ini sejalan dengan kewajiban pengendali data dalam Undang-Undang Pelindungan Data Pribadi.
 
 
 
-\## 10. Isu kualitas data yang diantisipasi
+## 10. Isu kualitas data yang diantisipasi
 
 Data anggota dapat tercatat lebih dari satu kali jika pencarian berdasarkan NIM tidak benar. Selain itu, stok barang menjadi tidak sesuai apabila pencatatan penjualan dan penerimaan barang tidak diperbarui. Harga barang tetap perlu disimpan agar saat adanya transaksi data lama tetap sesuai meski harga barangnya berubah.
 
