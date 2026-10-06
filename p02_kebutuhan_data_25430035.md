@@ -1,12 +1,12 @@
-\# Dokumen Kebutuhan Data - Klinik Sehat ZI
+# Dokumen Kebutuhan Data - Klinik Sehat ZI
 
 
 
-\## 1. Latar belakang dan aktivitas organisasi
+## 1. Latar belakang dan aktivitas organisasi
 
 
 
-\- Latar Belakang
+- Latar Belakang
 
 Klinik adalah salah satu bentuk layanan kesehatan yang berfokus kepada pengobatan dan pemberian penanganan medis kepada pasien. Kegiatan operasional klinik melibatkan pengelolaan data pasien, pendaftaran kunjungan, pemeriksaan pasien, pencatatan rekam medis, resep obat, pembayaran, serta pengelolaan persediaan obat.
 
@@ -14,7 +14,7 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 
 
-\- Aktivitas Organisasi
+- Aktivitas Organisasi
 
 1. Pendaftaran dan pencatatan data pasien
 2. Pencatatan kunjungan pasien
@@ -29,7 +29,7 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 
 
-\## 2. Aktor dan proses bisnis
+## 2. Aktor dan proses bisnis
 
 
 
@@ -46,15 +46,15 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 
 
-\## 3. Dokumen sumber yang dianalisis
+## 3. Dokumen sumber yang dianalisis
 
 
-!\[Tugas Mandiri](screenshot/TugasMandiri\_Gambar.png)
+![Tugas Mandiri](screenshot/TugasMandiri_Gambar.png)
 
 
 
 
-\## 4. Entitas kandidat dan elemen data
+## 4. Entitas kandidat dan elemen data
 
 |Entitas kandidat|Elemen data utama|Sumber|
 |-|-|-|
@@ -68,7 +68,7 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 
 
-\## 5. Aturan bisnis
+## 5. Aturan bisnis
 
 |Kode|Aturan bisnis|
 |-|-|
@@ -83,7 +83,7 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 
 
-\## 6. Kebutuhan informasi
+## 6. Kebutuhan informasi
 
 |Kode|Kebutuhan informasi|Data yang diperlukan|
 |-|-|-|
@@ -96,7 +96,7 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 
 
-\## 7. Matriks CRUD
+## 7. Matriks CRUD
 
 |Proses|Pasien|Kunjungan|Pemeriksaan|Resep|Obat|Pemasok|Pembayaran|
 |-|-|-|-|-|-|-|-|
@@ -111,34 +111,34 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 
 
-\## 8. Kamus data awal
+## 8. Kamus data awal
 
 |Elemen|Arti|Contoh|Sumber|Aturan|Penanggung jawab|
 |-|-|-|-|-|-|
-|no\_pasien|Nomor identitas pasien|P-001|Formulir pendaftaran|Setiap pasien memiliki nomor berbeda|Petugas pendaftaran|
+|no_pasien|Nomor identitas pasien|P-001|Formulir pendaftaran|Setiap pasien memiliki nomor berbeda|Petugas pendaftaran|
 |NIK|Nomor identitas kependudukan pasien|1871010101010001|Formulir pendaftaran|Sesuai identitas pasien|Petugas pendaftaran|
-|nama\_pasien|Nama lengkap pasien|Andi Pratama|Formulir pendaftaran|Tidak boleh kosong|Petugas pendaftaran|
-|tanggal\_lahir|Tanggal lahir pasien|10-01-2000|Formulir Pendaftaran|Harus berupa tanggal yang valid|Petugas pendaftaran|
-|jenis\_kelamin|Jenis kelamin pasien|Laki-laki|Formulir Pendaftaran|Mengikuti pilihan yang tersedia|Petugas pendaftaran|
+|nama_pasien|Nama lengkap pasien|Andi Pratama|Formulir pendaftaran|Tidak boleh kosong|Petugas pendaftaran|
+|tanggal_lahir|Tanggal lahir pasien|10-01-2000|Formulir Pendaftaran|Harus berupa tanggal yang valid|Petugas pendaftaran|
+|jenis_kelamin|Jenis kelamin pasien|Laki-laki|Formulir Pendaftaran|Mengikuti pilihan yang tersedia|Petugas pendaftaran|
 |alamat|Alamat tempat tinggal pasien|Jl. Melati No. 12|Formulir pendaftaran|Dapat diperbarui jika berubah|Petugas pendaftaran|
-|no\_HP|Nomor telepon pasien|081234567890|Formulir pendaftaran|Format nomor harus valid|Petugas pendaftaran|
-|no\_kunjungan|Nomor identitas kunjungan|KJ-001|Lembar kunjungan|Setiap kunjungan memiliki nomor berbeda|Petugas pendaftaran|
-|tanggal\_kunjungan|Tanggal pasien melakukan kunjungan|03-10-2026|Lembar kunjungan|Harus berupa tanggal yang valid|Petugas pendaftaran|
-|jenis\_kunjungan|Jenis pelayanan yang dilakukan|Pemeriksaan umum|Lembar kunjungan|Mengikuti jenis layanan klinik|Petugas pendaftaran|
+|no_HP|Nomor telepon pasien|081234567890|Formulir pendaftaran|Format nomor harus valid|Petugas pendaftaran|
+|no_kunjungan|Nomor identitas kunjungan|KJ-001|Lembar kunjungan|Setiap kunjungan memiliki nomor berbeda|Petugas pendaftaran|
+|tanggal_kunjungan|Tanggal pasien melakukan kunjungan|03-10-2026|Lembar kunjungan|Harus berupa tanggal yang valid|Petugas pendaftaran|
+|jenis_kunjungan|Jenis pelayanan yang dilakukan|Pemeriksaan umum|Lembar kunjungan|Mengikuti jenis layanan klinik|Petugas pendaftaran|
 |keluhan|Keluhan yang disampaikan pasien|Demam dan batuk|Lembar kunjungan|Dicatat sesuai keterangan pasien|Dokter|
-|no\_pemeriksaan|Nomor identitas pemeriksaan|PM-001|Lembar kunjungan|Setiap pemeriksaan memiliki nomor berbeda|Dokter|
-|hasil\_pemeriksaan|Hasil pemeriksaan pasien|Suhu 38 Derajat Celsius|Lembar kunjungan|Dicatat berdasarkan hasil pemeriksaan|Dokter|
+|no_pemeriksaan|Nomor identitas pemeriksaan|PM-001|Lembar kunjungan|Setiap pemeriksaan memiliki nomor berbeda|Dokter|
+|hasil_pemeriksaan|Hasil pemeriksaan pasien|Suhu 38 Derajat Celsius|Lembar kunjungan|Dicatat berdasarkan hasil pemeriksaan|Dokter|
 |diagnosis|Hasil diagnosis dokter|ISPA|Lembar kunjungan|Dicatat oleh dokter|Dokter|
-|no\_resep|Nomor identitas resep|R-001|Resep|Setiap resep memiliki nomor berbeda|Dokter|
-|kode\_obat|Kode identitas obat|OB-001|Resep|Setiap obat memiliki kode berbeda|Apoteker|
-|nama\_obat|Nama obat|Paracetamol|Resep|Tidak boleh kosong|Apoteker|
-|stok\_obat|Jumlah obat yang tersedia|50 tablet|Aktivitas apotek|Tidak boleh kurang dari 0|Apoteker|
-|no\_pembayaran|Nomor identitas pembayaran|BYR-001|Aktivitas pembayaran|Setiap pembayaran memiliki nomor berbeda|Kasir|
-|total\_bayar|Jumlah uang yang harus dibayar|Rp75.000|Aktivitas pembayaran|Nilai tidak boleh negatif|Kasir|
+|no_resep|Nomor identitas resep|R-001|Resep|Setiap resep memiliki nomor berbeda|Dokter|
+|kode_obat|Kode identitas obat|OB-001|Resep|Setiap obat memiliki kode berbeda|Apoteker|
+|nama_obat|Nama obat|Paracetamol|Resep|Tidak boleh kosong|Apoteker|
+|stok_obat|Jumlah obat yang tersedia|50 tablet|Aktivitas apotek|Tidak boleh kurang dari 0|Apoteker|
+|no_pembayaran|Nomor identitas pembayaran|BYR-001|Aktivitas pembayaran|Setiap pembayaran memiliki nomor berbeda|Kasir|
+|total_bayar|Jumlah uang yang harus dibayar|Rp75.000|Aktivitas pembayaran|Nilai tidak boleh negatif|Kasir|
 
 
 
-\## 9. Kebutuhan non-fungsional data
+## 9. Kebutuhan non-fungsional data
 
 
 
@@ -146,7 +146,7 @@ Kebutuhan non-fungsional dicatat singkat: perkiraan sekitar 85 transaksi per har
 
 
 
-\## 10. Isu kualitas data yang diantisipasi
+## 10. Isu kualitas data yang diantisipasi
 
 
 
