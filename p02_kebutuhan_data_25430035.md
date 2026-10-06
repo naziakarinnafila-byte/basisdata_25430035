@@ -100,14 +100,14 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 
 |Proses|Pasien|Kunjungan|Pemeriksaan|Resep|Obat|Pemasok|Pembayaran|
 |-|-|-|-|-|-|-|-|
-|PB-01 Mendaftarkan pasien|C/U|||||||
+|PB-01 Mendaftarkan pasien|C,U|||||||
 |PB-02 Mencatat kunjungan|R|C||||||
-|PB-03 Melakukan pemeriksaan|R|R|C/U|||||
+|PB-03 Melakukan pemeriksaan|R|R|C,U|||||
 |PB-04 Membuat resep|R|R|R|C|R|||
-|PB-05 Melayani resep dan obat|R|R||R/U|R/U|||
+|PB-05 Melayani resep dan obat|R|R||R,U|R,U|||
 |PB-06 Mencatat pembayaran|R|R||R|R||C|
-|PB-07 Mengelola persediaan obat|||||R/U|||
-|PB-08 Memesan dan menerima obat|||||C/U|C/R||
+|PB-07 Mengelola persediaan obat|||||R,U|||
+|PB-08 Memesan dan menerima obat|||||C,U|C,R||
 
 
 
