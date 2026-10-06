@@ -26,7 +26,7 @@ Kutipan wawancara. Ketua: “Harga barang sering naik, jadi kami bingung saat me
 
 \## 3. Dokumen sumber yang dianalisis
 
-!\[screenshot percobaan](screenshot/Percobaan\_Gambar.png)
+!\[Percobaan](screenshot/Percobaan\_Gambar.png)
 
 
 
