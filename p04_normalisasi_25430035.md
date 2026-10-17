@@ -1,215 +1,228 @@
-Modul 4: Normalisasi dan Skema Relasional
+# Modul 4 — Normalisasi dan Skema Relasional
+## Proyek: Klinik Sehat ZI
 
+> **Tujuan:** Menata struktur basis data agar mengurangi pengulangan data, menjaga konsistensi, dan memperjelas hubungan antartabel.
 
+---
 
-Dari UNF ke 1NF
+## 1. Dari UNF ke 1NF
 
-1\. Tulis relasi awal dalam bentuk UNF. Satu resep menyimpan grup berulang obat:
+### 1.1 Bentuk UNF
 
+Satu resep dapat berisi beberapa jenis obat. Karena itu, data obat merupakan grup berulang pada bentuk awal (UNF).
 
+```text
+RESEP_UNF (
+    id_resep,
+    tanggal_resep,
+    id_pemeriksaan,
+    dokter,
+    {
+        id_obat,
+        nama_obat,
+        jumlah_obat,
+        aturan_pemakaian
+    }
+)
+```
 
-RESEP\_UNF (
+### 1.2 Bentuk 1NF
 
-&#x20; id\_resep, tanggal\_resep, id\_pemeriksaan, dokter,
+Untuk menghilangkan grup berulang, setiap baris mewakili satu obat dalam satu resep. Kunci primer pada relasi detail menggunakan gabungan `(id_resep, id_obat)`.
 
-&#x20; {
+```text
+RESEP_1NF (
+    id_resep,
+    id_obat,
+    tanggal_resep,
+    id_pemeriksaan,
+    dokter,
+    nama_obat,
+    jumlah_obat,
+    aturan_pemakaian
+)
+```
 
-&#x20;   id\_obat, nama\_obat, jumlah\_obat, aturan\_pemakaian
+---
 
-&#x20; }
+## 2. Dependensi Fungsional
 
+Dependensi fungsional (FD) diturunkan dari aturan bisnis proyek dan struktur ERD, bukan hanya dari contoh data.
+
+| Kode | Dependensi fungsional | Dasar |
+|---|---|---|
+| FD1 | `id_pasien → NIK, nama_pasien, tanggal_lahir, jenis_kelamin, alamat, no_HP` | AB-01 dan asumsi NIK wajib serta unik |
+| FD2 | `id_kunjungan → id_pasien, tanggal_kunjungan, jenis_kunjungan, keluhan` | AB-02 |
+| FD3 | `id_pemeriksaan → id_kunjungan, hasil_pemeriksaan, diagnosis` | AB-03 |
+| FD4 | `id_resep → id_pemeriksaan, tanggal_resep, dokter` | AB-04 dan ERD |
+| FD5 | `(id_resep, id_obat) → jumlah_obat, aturan_pemakaian` | AB-05 |
+| FD6 | `id_pembayaran → id_kunjungan, tanggal_pembayaran, total_bayar, metode_pembayaran` | AB-07 |
+| FD7 | `id_obat → nama_obat, satuan, harga_obat, stok_obat` | Struktur ERD |
+| FD8 | `id_pemasok → nama_pemasok, alamat, no_HP` | Struktur ERD |
+| FD9 | `id_penerimaan → id_pemasok, tanggal_penerimaan` | Struktur ERD |
+| FD10 | `(id_penerimaan, id_obat) → jumlah_diterima` | Struktur ERD |
+| FD11 | `NIK → id_pasien, nama_pasien, tanggal_lahir, jenis_kelamin, alamat, no_HP` | Asumsi NIK wajib dan unik |
+
+**Catatan:** AB-06 mengatur agar stok tidak negatif dan AB-08 mengatur akses data kesehatan. Keduanya merupakan aturan integritas/akses, bukan dependensi fungsional langsung.
+
+---
+
+## 3. Menuju 2NF dan 3NF
+
+### 3.1 Bentuk Normal Kedua (2NF)
+
+Pada `RESEP_1NF`, kunci komposit terdiri dari `id_resep` dan `id_obat`.
+
+- `tanggal_resep`, `id_pemeriksaan`, dan `dokter` bergantung pada `id_resep`.
+- `nama_obat` bergantung pada `id_obat`.
+- `jumlah_obat` dan `aturan_pemakaian` bergantung pada gabungan `(id_resep, id_obat)`.
+
+Untuk menghilangkan ketergantungan parsial, data resep dan data obat dipisahkan dari detail resep.
+
+### 3.2 Bentuk Normal Ketiga (3NF)
+
+Data pemeriksaan bergantung pada `id_pemeriksaan`, data pasien bergantung pada `id_pasien`, dan data kunjungan bergantung pada `id_kunjungan`. Karena itu, masing-masing disimpan pada relasi tersendiri. Pemisahan ini mengurangi pengulangan data pasien, kunjungan, pemeriksaan, dan obat.
+
+### 3.3 Skema relasional hasil normalisasi
+
+```text
+PASIEN (
+    id_pasien [PK],
+    NIK [UNIQUE, NOT NULL],
+    nama_pasien,
+    tanggal_lahir,
+    jenis_kelamin,
+    alamat,
+    no_HP
 )
 
-
-
-2\. Hilangkan grup berulang: satu baris untuk setiap obat di setiap resep. Kunci primer menjadi komposit (id\_resep, id\_obat).
-
-
-
-RESEP\_1NF (
-
-&#x20; id\_resep, id\_obat, tanggal\_resep, id\_pemeriksaan,
-
-&#x20; dokter, nama\_obat, jumlah\_obat, aturan\_pemakaian
-
+KUNJUNGAN (
+    id_kunjungan [PK],
+    id_pasien [FK],
+    tanggal_kunjungan,
+    jenis_kunjungan,
+    keluhan
 )
 
+PEMERIKSAAN (
+    id_pemeriksaan [PK],
+    id_kunjungan [FK],
+    hasil_pemeriksaan,
+    diagnosis
+)
+
+RESEP (
+    id_resep [PK],
+    id_pemeriksaan [FK],
+    tanggal_resep,
+    dokter
+)
+
+DETAIL_RESEP (
+    id_resep [PK, FK],
+    id_obat [PK, FK],
+    jumlah_obat,
+    aturan_pemakaian
+)
+
+OBAT (
+    id_obat [PK],
+    nama_obat,
+    satuan,
+    harga_obat,
+    stok_obat
+)
+
+PEMBAYARAN (
+    id_pembayaran [PK],
+    id_kunjungan [FK],
+    tanggal_pembayaran,
+    total_bayar,
+    metode_pembayaran
+)
+
+PEMASOK (
+    id_pemasok [PK],
+    nama_pemasok,
+    alamat,
+    no_HP
+)
+
+PENERIMAAN (
+    id_penerimaan [PK],
+    id_pemasok [FK],
+    tanggal_penerimaan
+)
+
+DETAIL_PENERIMAAN (
+    id_penerimaan [PK, FK],
+    id_obat [PK, FK],
+    jumlah_diterima
+)
+```
+
+**Keterangan:** PK = kunci primer, FK = kunci tamu, UNIQUE = nilai tidak boleh sama. Pada `DETAIL_RESEP`, PK gabungan adalah `(id_resep, id_obat)`. Pada `DETAIL_PENERIMAAN`, PK gabungan adalah `(id_penerimaan, id_obat)`. Penetapan `NIK` sebagai `NOT NULL` dan `UNIQUE` merupakan asumsi aturan bisnis yang perlu disesuaikan jika ketentuan proyek berbeda.
+
+---
+
+## 4. Keputusan Penyimpanan Nilai Turunan
+
+| Atribut | Keputusan | Alasan |
+|---|---|---|
+| `total_bayar` | Disimpan sebagai catatan pembayaran aktual | Menyimpan nominal yang dibayarkan saat transaksi. Nilainya harus konsisten dengan rincian biaya. |
+| `stok_obat` | Disimpan | Memudahkan pemeriksaan stok terkini; harus diperbarui secara konsisten saat obat diterima atau dikeluarkan. |
+| `jumlah_obat` | Disimpan | Merupakan fakta transaksi yang menunjukkan jumlah obat pada resep. |
+| `jumlah_diterima` | Disimpan | Mencatat jumlah obat yang diterima dari pemasok. |
+| `subtotal_detail_resep` | Tidak disimpan | Jika dihitung dari jumlah obat dan harga yang berlaku, nilainya dapat dihitung saat diperlukan. |
+
+**Catatan:** Jika `total_bayar` hanya digunakan sebagai hasil penjumlahan rincian biaya, nilai tersebut dapat dihitung. Namun, nominal pembayaran aktual tetap dapat dicatat sebagai fakta transaksi.
+
+---
+
+## 5. Mencocokkan dengan Skema Kanonik
+
+Skema hasil normalisasi dibandingkan dengan ERD Klinik Sehat ZI. Skema menggunakan `id_*` sebagai kunci primer pengganti (*surrogate key*), sedangkan `NIK` digunakan sebagai atribut unik. Tabel detail resep dan detail penerimaan menggunakan kunci primer gabungan yang juga menjadi kunci tamu ke tabel terkait.
+
+### 5.1 Pemeriksaan PK, UNIQUE, dan FK
+
+| Tabel | Kunci primer (PK) | Kunci unik | Kunci tamu (FK) |
+|---|---|---|---|
+| `pasien` | `id_pasien` | `NIK` | — |
+| `kunjungan` | `id_kunjungan` | — | `id_pasien` |
+| `pemeriksaan` | `id_pemeriksaan` | — | `id_kunjungan` |
+| `resep` | `id_resep` | — | `id_pemeriksaan` |
+| `detail_resep` | `(id_resep, id_obat)` | — | `id_resep`, `id_obat` |
+| `obat` | `id_obat` | — | — |
+| `pembayaran` | `id_pembayaran` | — | `id_kunjungan` |
+| `pemasok` | `id_pemasok` | — | — |
+| `penerimaan` | `id_penerimaan` | — | `id_pemasok` |
+| `detail_penerimaan` | `(id_penerimaan, id_obat)` | — | `id_penerimaan`, `id_obat` |
+
+### 5.2 Pemeriksaan BCNF
+
+Suatu relasi memenuhi Boyce-Codd Normal Form (BCNF) apabila setiap determinan pada dependensi fungsional nontrivial merupakan superkey. Pemeriksaan dilakukan dengan memastikan bahwa penentu seperti `id_pasien`, `id_kunjungan`, `id_pemeriksaan`, `id_resep`, `id_obat`, `id_pembayaran`, `id_pemasok`, dan `id_penerimaan` merupakan kunci pada relasi masing-masing. Pada tabel detail, gabungan kunci digunakan untuk menentukan atribut transaksi yang bergantung pada seluruh kunci.
+
+---
+
+## 6. ERD Klinik Sehat ZI
 
+Gambar ERD diletakkan pada jalur berikut agar dapat ditampilkan di GitHub:
 
-Menuliskan Dependensi Fungsional
+![ERD Klinik Sehat ZI](screenshot/p04_erd_25430035.png)
 
-3\. Turunkan dependensi fungsional dari aturan bisnis proyek, bukan dari isi contoh data.
+> Pastikan file gambar benar-benar tersimpan di `screenshot/p04_erd_25430035.png`. Nama folder dan file harus sama persis, termasuk huruf besar-kecil.
 
+---
 
+## 7. Catatan Perubahan ERD
 
-FD1: id\_pasien -> NIK, nama\_pasien, tanggal\_lahir,
+1. `NIK` pada tabel `pasien` direncanakan sebagai `NOT NULL` dan `UNIQUE`, berdasarkan asumsi setiap pasien wajib memiliki NIK yang berbeda.
+2. `detail_resep` menggunakan PK gabungan `(id_resep, id_obat)`.
+3. `detail_penerimaan` menggunakan PK gabungan `(id_penerimaan, id_obat)`.
+4. Hubungan antartabel lainnya mengikuti ERD proyek Klinik Sehat ZI.
 
-&#x20;    jenis\_kelamin, alamat, no\_HP
+---
 
-&#x20;    (AB-01 dan aturan NIK wajib unik)
+## 8. Kesimpulan
 
-FD2: id\_kunjungan -> id\_pasien, tanggal\_kunjungan,
-
-&#x20;    jenis\_kunjungan, keluhan
-
-&#x20;    (AB-02)
-
-FD3: id\_pemeriksaan -> id\_kunjungan,
-
-&#x20;    hasil\_pemeriksaan, diagnosis
-
-&#x20;    (AB-03)
-
-FD4: id\_resep -> id\_pemeriksaan, tanggal\_resep, dokter
-
-&#x20;    (AB-04, mengikuti ERD)
-
-FD5: (id\_resep, id\_obat) -> jumlah\_obat,
-
-&#x20;    aturan\_pemakaian
-
-&#x20;    (AB-05)
-
-FD6: id\_pembayaran -> id\_kunjungan,
-
-&#x20;    tanggal\_pembayaran, total\_bayar, metode\_pembayaran
-
-&#x20;    (AB-07)
-
-FD7: id\_obat -> nama\_obat, satuan, harga\_obat, stok\_obat
-
-FD8: id\_pemasok -> nama\_pemasok, alamat, no\_HP
-
-FD9: id\_penerimaan -> id\_pemasok, tanggal\_penerimaan
-
-FD10: (id\_penerimaan, id\_obat) -> jumlah\_diterima
-
-FD11: NIK -> id\_pasien, nama\_pasien, tanggal\_lahir,
-
-&#x20;     jenis\_kelamin, alamat, no\_HP
-
-&#x20;     (aturan bisnis NIK wajib dan unik)
-
-
-
-Menuju 2NF dan 3NF
-
-4\. 2NF. Pada relasi RESEP\_1NF, kunci komposit terdiri dari id\_resep dan id\_obat. Atribut tanggal\_resep, id\_pemeriksaan, dan dokter hanya bergantung pada id\_resep, sedangkan nama\_obat bergantung pada id\_obat. Pisahkan menjadi relasi resep dan obat. Atribut jumlah\_obat dan aturan\_pemakaian tetap berada pada relasi detail resep karena bergantung pada keseluruhan kunci komposit.
-
-
-
-5\. 3NF. Atribut pemeriksaan seperti hasil\_pemeriksaan dan diagnosis bergantung pada id\_pemeriksaan, bukan langsung pada id\_resep. Karena itu, data pemeriksaan dipisahkan dalam relasi PEMERIKSAAN. Data pasien juga disimpan terpisah dalam relasi PASIEN, sedangkan data kunjungan disimpan dalam relasi KUNJUNGAN. Pemisahan ini menghindari pengulangan data pasien, kunjungan, pemeriksaan, dan obat pada tabel resep.
-
-
-
-6\. Nilai turunan. Atribut total\_bayar dapat dihitung dari biaya yang tercatat pada transaksi, tetapi perlu dipertimbangkan untuk tetap disimpan sebagai catatan nilai pembayaran saat transaksi terjadi. Atribut stok\_obat disimpan sebagai stok terkini dan harus diperbarui secara konsisten ketika obat diterima atau dikeluarkan. Atribut jumlah\_obat dan jumlah\_diterima tetap disimpan karena merupakan fakta transaksi yang mencatat kuantitas obat pada resep dan penerimaan.
-
-
-
-PASIEN (id\_pasien, NIK\*, nama\_pasien, tanggal\_lahir,
-
-&#x20;       jenis\_kelamin, alamat, no\_HP)
-
-KUNJUNGAN (id\_kunjungan, id\_pasien\*, tanggal\_kunjungan,
-
-&#x20;          jenis\_kunjungan, keluhan)
-
-PEMERIKSAAN (id\_pemeriksaan, id\_kunjungan\*,
-
-&#x20;            hasil\_pemeriksaan, diagnosis)
-
-RESEP (id\_resep, id\_pemeriksaan\*, tanggal\_resep, dokter)
-
-DETAIL\_RESEP (id\_resep\*, id\_obat\*, jumlah\_obat,
-
-&#x20;             aturan\_pemakaian)
-
-OBAT (id\_obat, nama\_obat, satuan, harga\_obat, stok\_obat)
-
-PEMBAYARAN (id\_pembayaran, id\_kunjungan\*,
-
-&#x20;           tanggal\_pembayaran, total\_bayar, metode\_pembayaran)
-
-PEMASOK (id\_pemasok, nama\_pemasok, alamat, no\_HP)
-
-PENERIMAAN (id\_penerimaan, id\_pemasok\*, tanggal\_penerimaan)
-
-DETAIL\_PENERIMAAN (id\_penerimaan\*, id\_obat\*, jumlah\_diterima)
-
-
-
-\-- garis bawah = kunci primer; \* = kunci tamu (FK)
-
-
-
-Catatan: Tanda \* menunjukkan FK, sedangkan penentuan PK mengikuti ERD proyek. Untuk DETAIL\_RESEP, PK gabungan adalah (id\_resep, id\_obat); untuk DETAIL\_PENERIMAAN, PK gabungan adalah (id\_penerimaan, id\_obat). NIK direncanakan sebagai NOT NULL dan UNIQUE.
-
-
-
-Mencocokkan dengan Skema Kanonik
-
-7\. Membandingkan dengan skema kanonik. Bandingkan hasil normalisasi dengan ERD Klinik Sehat ZI. Perbedaan utama terdapat pada penggunaan kunci pengganti (surrogate key) id\_\* sebagai kunci primer, sedangkan atribut alami seperti NIK digunakan sebagai atribut unik. Pada tabel detail resep dan detail penerimaan, kunci primer merupakan gabungan dua kunci tamu.
-
-
-
-8\. Memeriksa PK, UNIQUE, dan FK. Pastikan setiap tabel mempunyai kunci primer, hubungan antartabel menggunakan kunci tamu yang sesuai dengan ERD, dan atribut yang harus unik memiliki batasan UNIQUE. Pada tabel PASIEN, NIK ditetapkan NOT NULL dan UNIQUE berdasarkan asumsi aturan bisnis bahwa setiap pasien memiliki NIK yang wajib diisi dan tidak boleh sama.
-
-
-
-9\. Memeriksa BCNF. Suatu relasi memenuhi Boyce-Codd Normal Form (BCNF) apabila setiap determinan pada ketergantungan fungsional nontrivial merupakan superkey. Berdasarkan ketergantungan fungsional yang telah diidentifikasi, pemeriksaan dilakukan dengan memastikan bahwa atribut penentu seperti id\_pasien, id\_kunjungan, id\_pemeriksaan, id\_resep, id\_obat, id\_pembayaran, id\_pemasok, dan id\_penerimaan merupakan kunci pada relasi masing-masing. Pada tabel detail, gabungan kunci primer digunakan untuk menentukan atribut transaksi yang bergantung pada seluruh kunci.
-
-
-
-|Tabel|Kunci primer|Kunci unik|Kunci Tamu|
-|-|-|-|-|
-|pasien|id\_pasien|NIK|-|
-|kunjungan|id\_kunjungan|-|id\_pasien|
-|pemeriksaan|id\_pemeriksaan|-|id\_kunjungan|
-|resep|id\_resep|-|id\_pemeriksaan|
-|detail\_resep|(id\_resep, id\_obat)|-|id\_resep, id\_obat|
-|obat|id\_obat|-|-|
-|pembayaran|id\_pembayaran|-|id\_kunjungan|
-|pemasok|id\_pemasok|-|-|
-|penerimaan|id\_penerimaan|-|id\_pemasok|
-|detail\_penerimaan|(id\_penerimaan, id\_obat)|-|id\_penerimaan, id\_obat|
-
-
-
-Keputusan Penyimpanan Nilai Turunan
-
-
-
-|Atribut|Keputusan|Alasan|
-|-|-|-|
-|total\_bayar|Disimpan|Menjadi catatan nominal pembayaran saat transaksi dilakukan. Nilainya harus konsisten dengan perhitungan biaya transaksi.|
-|stok\_obat|Disimpan|Dibutuhkan untuk mengetahui stok terkini dengan cepat. Nilainya harus diperbarui secara konsisten setiap ada penerimaan atau pengeluaran obat.|
-|jumlah\_obat|Disimpan|Merupakan jumlah obat yang diresepkan pada suatu transaksi, bukan nilai yang dihitung dari atribut lain.|
-|jumlah\_diterima|Disimpan|Mencatat jumlah obat yang diterima dari pemasok pada suatu transaksi penerimaan.|
-|subtotal\_detail\_resep|Tidak disimpan|Jika subtotal dihitung dari jumlah\_obat × harga\_obat, nilainya dapat dihitung saat diperlukan.|
-|total\_bayar hasil penjumlahan rincian biaya|Tidak perlu disimpan sebagai hasil hitung terpisah|Jika hanya berupa hasil penjumlahan rincian biaya, nilai tersebut dapat dihitung dari rincian transaksi. Namun, nominal pembayaran aktual tetap dapat disimpan sebagai catatan transaksi.|
-
-
-
-ERD Klinik Sehat ZI
-
-!\[Screenshot ERD Klinik](screenshot/p04\_erd\_25430035.png)
-
-
-
-Catatan Perubahan ERD
-
-
-
-1. Atribut NIK pada tabel pasien ditetapkan sebagai UNIQUE dan NOT NULL berdasarkan asumsi bahwa setiap pasien wajib memiliki NIK yang berbeda.
-2. Tabel detail\_resep menggunakan kunci primer gabungan (id\_resep, id\_obat).
-3. Tabel detail\_penerimaan menggunakan kunci primer gabungan (id\_penerimaan, id\_obat).
-4. Hubungan antartabel tetap mengikuti ERD proyek Klinik Sehat ZI.
-
-
-
-Kesimpulan
-
-
-
-Proses normalisasi dilakukan mulai dari bentuk tidak normal (UNF), bentuk normal pertama (1NF), bentuk normal kedua (2NF), hingga bentuk normal ketiga (3NF). Hasilnya berupa tabel-tabel yang memisahkan data pasien, kunjungan, pemeriksaan, resep, obat, pembayaran, pemasok, dan penerimaan obat. Pemisahan ini membantu mengurangi pengulangan data serta menjaga konsistensi hubungan antartabel. Pemeriksaan BCNF dilakukan berdasarkan ketergantungan fungsional dan kunci pada setiap relasi.
-
+Normalisasi dilakukan dari UNF ke 1NF, 2NF, dan 3NF untuk mengurangi pengulangan data serta menjaga konsistensi hubungan antartabel. Hasilnya adalah tabel-tabel terpisah untuk pasien, kunjungan, pemeriksaan, resep, obat, pembayaran, pemasok, dan penerimaan obat. Pemeriksaan kunci serta BCNF membantu memastikan bahwa struktur relasi sesuai dengan dependensi fungsional yang telah diidentifikasi.

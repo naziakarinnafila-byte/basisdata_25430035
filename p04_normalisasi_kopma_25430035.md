@@ -1,124 +1,174 @@
-* Dari UNF ke 1NF
-
-
-
-1\. Tulis relasi spreadsheet lama dalam bentuk UNF. Satu nota menyimpan grup berulang barang:
-
-NOTA\_UNF (no\_nota\_penjualan, tgl\_penjualan, kode\_petugas, nama\_petugas, no\_anggota, nama\_anggota,
-
-{ kode\_barang, nama\_barang, qty\_detail\_penjualan, harga\_satuan\_detail\_penjualan, subtotal\_detail\_penjualan },
-
-jumlah\_penjualan, diskon\_penjualan, total\_penjualan)
-
-
-
-2\. Hilangkan grup berulang: satu baris untuk setiap barang di setiap nota. Kunci primer menjadi komposit (no\_nota\_penjualan, kode\_barang).
-
-NOTA\_1NF (no\_nota\_penjualan, kode\_barang, tgl\_penjualan, kode\_petugas, nama\_petugas, no\_anggota,
-
-nama\_anggota, nama\_barang, qty\_detail\_penjualan, harga\_satuan\_detail\_penjualan, subtotal\_detail\_penjualan, jumlah\_penjualan, diskon\_penjualan, total\_penjualan)
-
-
-
-* Menuliskan Dependensi Fungsional
-
-
-
-3\. Turunkan dependensi fungsional dari aturan bisnis Pertemuan 2, bukan dari isi spreadsheet.
-
-FD1: no\_nota\_penjualan -> tgl\_penjualan, kode\_petugas, no\_anggota (AB-01)
-
-FD2: kode\_petugas -> nama\_petugas
-
-FD3: no\_anggota -> nama\_anggota (AB-05)
-
-FD4: kode\_barang -> nama\_barang
-
-FD5: (no\_nota\_penjualan, kode\_barang)
-
-\-> qty\_detail\_penjualan, harga\_satuan\_detail\_penjualan (AB-04)
-
-FD6: qty\_detail\_penjualan, harga\_satuan\_detail\_penjualan
-
-\-> subtotal\_detail\_penjualan (turunan)
-
-
-
-* Menuju 2NF dan 3NF
-
-
-
-4\. 2NF. FD1 dan FD4 hanya bergantung pada sebagian kunci komposit. Pisahkan menjadi relasi sendiri: penjualan (kunci no\_nota\_penjualan) dan barang (kunci kode\_barang). Sisanya menjadi detail penjualan.
-
-
-
-5\. 3NF. Di relasi penjualan terdapat rantai no\_nota\_penjualan → kode\_petugas → nama\_petugas dan no\_nota\_penjualan → no\_anggota → nama\_anggota. Pisahkan petugas dan anggota menjadi relasi sendiri.
-
-
-
-6\. Nilai turunan. subtotal\_detail\_penjualan, jumlah\_penjualan, dan total\_penjualan dapat dihitung dari detail dan status anggota. Buku ini memutuskan tidak menyimpannya di tabel operasional, sehingga tidak mungkin tidak konsisten.
-
-
-
-PENJUALAN (no\_nota\_penjualan, tgl\_penjualan, kode\_petugas\*,
-
-&#x20;          no\_anggota\*, bayar\_penjualan)
-
-DETAIL\_PENJUALAN (no\_nota\_penjualan\*, kode\_barang\*,
-
-&#x20;                 qty\_detail\_penjualan, harga\_satuan\_detail\_penjualan)
-
-BARANG (kode\_barang, nama\_barang, kategori\_barang, harga\_jual\_barang,
-
-&#x20;       stok\_barang, stok\_min\_barang)
-
-PETUGAS (kode\_petugas, nama\_petugas, peran\_petugas)
-
-ANGGOTA (no\_anggota, nim\_anggota, nama\_anggota, prodi\_anggota,
-
-&#x20;        no\_hp\_anggota, status\_anggota, tgl\_daftar\_anggota)
-
-\-- garis bawah = kunci primer, \* = kunci tamu
-
-
-
-* Keputusan Nilai Turunan
-
-
-
-|Atribut|Keputusan|Alasan|
-|-|-|-|
-|subtotal\_detail\_penjualan|Tidak disimpan|Dapat dihitung dari kuantitas dikalikan harga satuan transaksi.|
-|jumlah\_penjualan|Tidak disimpan|Dapat dihitung dari penjumlahan subtotal detail penjualan.|
-|total\_penjualan|Tidak disimpan pada tabel operasional|Dapat dihitung dari jumlah penjualan dan diskon sesuai aturan perhitungan.|
-|harga\_satuan\_detail\_penjualan|Disimpan|Mencatat harga pada saat transaksi agar riwayat penjualan tidak berubah ketika harga barang diperbarui.|
-
-
-
-* Mencocokkan dengan Skema Kanonik
-
-
-
-7\. Tabel kunci primer, kunci unik, dan kunci tamu
-
-
-
-|Tabel|Kunci primer|Kunci unik|Kunci tamu|
-|-|-|-|-|
-|petugas|id\_petugas|kode\_petugas	|–|
-|anggota|id\_anggota	|no\_anggota, nim\_anggota	|–|
-|barang|id\_barang|kode\_barang	|–|
-|pemasok|id\_pemasok|–	|–|
-|penjualan|id\_penjualan	|no\_nota\_penjualan|id\_petugas, id\_anggota (boleh NULL)|
-|detail\_penjualan|(id\_penjualan, id\_barang)|–	|id\_penjualan, id\_barang|
-|pembelian|id\_pembelian|–|id\_pemasok|
-|detail\_pembelian|(id\_pembelian, id\_barang)|–	|id\_pembelian, id\_barang|
-
-
-
-8\. Pemeriksaan BCNF
-
-
-
-Setiap determinan pada dependensi fungsional nontrivial harus merupakan kunci kandidat. Contohnya, kode\_barang menentukan nama\_barang, sehingga kode\_barang harus unik pada tabel barang. Pada tabel detail, gabungan kunci menentukan kuantitas dan harga transaksi. Jika ditemukan determinan yang bukan kunci kandidat, relasi tersebut perlu diperiksa kembali.
-
+# Modul 4 — Normalisasi dan Skema Relasional
+## Contoh: Sistem Penjualan KOPMA
+
+> **Tujuan:** Menormalisasi data penjualan agar data tidak berulang secara berlebihan dan lebih mudah dijaga konsistensinya.
+
+---
+
+## 1. Dari UNF ke 1NF
+
+### 1.1 Bentuk UNF
+
+Satu nota dapat memuat beberapa barang. Daftar barang pada nota merupakan grup berulang.
+
+```text
+NOTA_UNF (
+    no_nota_penjualan,
+    tgl_penjualan,
+    kode_petugas,
+    nama_petugas,
+    no_anggota,
+    nama_anggota,
+    {
+        kode_barang,
+        nama_barang,
+        qty_detail_penjualan,
+        harga_satuan_detail_penjualan,
+        subtotal_detail_penjualan
+    },
+    jumlah_penjualan,
+    diskon_penjualan,
+    total_penjualan
+)
+```
+
+### 1.2 Bentuk 1NF
+
+Grup berulang diubah sehingga setiap baris mewakili satu barang dalam satu nota. Kunci primer relasi awal ini adalah gabungan `(no_nota_penjualan, kode_barang)`.
+
+```text
+NOTA_1NF (
+    no_nota_penjualan,
+    kode_barang,
+    tgl_penjualan,
+    kode_petugas,
+    nama_petugas,
+    no_anggota,
+    nama_anggota,
+    nama_barang,
+    qty_detail_penjualan,
+    harga_satuan_detail_penjualan,
+    subtotal_detail_penjualan,
+    jumlah_penjualan,
+    diskon_penjualan,
+    total_penjualan
+)
+```
+
+---
+
+## 2. Dependensi Fungsional
+
+Dependensi fungsional (FD) diturunkan dari aturan bisnis Pertemuan 2, bukan hanya dari isi spreadsheet.
+
+| Kode | Dependensi fungsional | Dasar |
+|---|---|---|
+| FD1 | `no_nota_penjualan → tgl_penjualan, kode_petugas, no_anggota` | AB-01 |
+| FD2 | `kode_petugas → nama_petugas` | Data petugas |
+| FD3 | `no_anggota → nama_anggota` | AB-05 |
+| FD4 | `kode_barang → nama_barang` | Data barang |
+| FD5 | `(no_nota_penjualan, kode_barang) → qty_detail_penjualan, harga_satuan_detail_penjualan` | AB-04 |
+| FD6 | `(qty_detail_penjualan, harga_satuan_detail_penjualan) → subtotal_detail_penjualan` | Nilai turunan |
+
+---
+
+## 3. Menuju 2NF dan 3NF
+
+### 3.1 Bentuk Normal Kedua (2NF)
+
+Pada relasi 1NF, sebagian atribut hanya bergantung pada sebagian dari kunci komposit. Informasi nota dipisahkan ke relasi `PENJUALAN`, informasi barang ke relasi `BARANG`, dan informasi jumlah serta harga saat transaksi disimpan pada `DETAIL_PENJUALAN`.
+
+### 3.2 Bentuk Normal Ketiga (3NF)
+
+Di relasi penjualan terdapat ketergantungan transitif:
+
+- `no_nota_penjualan → kode_petugas → nama_petugas`
+- `no_nota_penjualan → no_anggota → nama_anggota`
+
+Karena itu, data petugas dan anggota dipisahkan ke relasi masing-masing.
+
+### 3.3 Skema relasional hasil normalisasi
+
+```text
+PENJUALAN (
+    no_nota_penjualan [PK],
+    tgl_penjualan,
+    kode_petugas [FK],
+    no_anggota [FK],
+    bayar_penjualan
+)
+
+DETAIL_PENJUALAN (
+    no_nota_penjualan [PK, FK],
+    kode_barang [PK, FK],
+    qty_detail_penjualan,
+    harga_satuan_detail_penjualan
+)
+
+BARANG (
+    kode_barang [PK],
+    nama_barang,
+    kategori_barang,
+    harga_jual_barang,
+    stok_barang,
+    stok_min_barang
+)
+
+PETUGAS (
+    kode_petugas [PK],
+    nama_petugas,
+    peran_petugas
+)
+
+ANGGOTA (
+    no_anggota [PK],
+    nim_anggota,
+    nama_anggota,
+    prodi_anggota,
+    no_hp_anggota,
+    status_anggota,
+    tgl_daftar_anggota
+)
+```
+
+**Keterangan:** PK = kunci primer dan FK = kunci tamu. Skema di atas merangkum hasil normalisasi awal; pada skema kanonik, kunci pengganti seperti `id_penjualan`, `id_barang`, `id_petugas`, dan `id_anggota` juga dapat digunakan.
+
+---
+
+## 4. Keputusan Penyimpanan Nilai Turunan
+
+| Atribut | Keputusan | Alasan |
+|---|---|---|
+| `subtotal_detail_penjualan` | Tidak disimpan | Dapat dihitung dari kuantitas dikalikan harga satuan transaksi. |
+| `jumlah_penjualan` | Tidak disimpan | Dapat dihitung dengan menjumlahkan subtotal setiap detail penjualan. |
+| `total_penjualan` | Tidak disimpan pada tabel operasional | Dapat dihitung dari jumlah penjualan dan diskon sesuai aturan perhitungan. |
+| `harga_satuan_detail_penjualan` | Disimpan | Mencatat harga yang berlaku saat transaksi, sehingga riwayat tidak berubah ketika harga barang diperbarui. |
+
+Keputusan tidak menyimpan nilai turunan mengikuti contoh materi. Jika sistem perlu menyimpan nominal pembayaran aktual sebagai bukti transaksi, aturan penyimpanan tersebut perlu dijelaskan secara terpisah.
+
+---
+
+## 5. Mencocokkan dengan Skema Kanonik
+
+### 5.1 Pemeriksaan PK, UNIQUE, dan FK
+
+| Tabel | Kunci primer (PK) | Kunci unik | Kunci tamu (FK) |
+|---|---|---|---|
+| `petugas` | `id_petugas` | `kode_petugas` | — |
+| `anggota` | `id_anggota` | `no_anggota`, `nim_anggota` | — |
+| `barang` | `id_barang` | `kode_barang` | — |
+| `pemasok` | `id_pemasok` | — | — |
+| `penjualan` | `id_penjualan` | `no_nota_penjualan` | `id_petugas`, `id_anggota` (boleh NULL) |
+| `detail_penjualan` | `(id_penjualan, id_barang)` | — | `id_penjualan`, `id_barang` |
+| `pembelian` | `id_pembelian` | — | `id_pemasok` |
+| `detail_pembelian` | `(id_pembelian, id_barang)` | — | `id_pembelian`, `id_barang` |
+
+### 5.2 Pemeriksaan BCNF
+
+Setiap determinan pada dependensi fungsional nontrivial harus merupakan kunci kandidat. Contohnya, `kode_barang` menentukan `nama_barang`, sehingga `kode_barang` harus unik pada tabel barang. Pada tabel detail, gabungan kunci menentukan kuantitas dan harga transaksi. Jika ditemukan determinan yang bukan kunci kandidat, relasi tersebut perlu diperiksa kembali.
+
+---
+
+## 6. Kesimpulan
+
+Normalisasi pada contoh KOPMA dimulai dari UNF, dilanjutkan ke 1NF, 2NF, dan 3NF. Proses ini memisahkan data nota, barang, petugas, dan anggota berdasarkan dependensi fungsionalnya. Nilai yang dapat dihitung dipertimbangkan untuk tidak disimpan sebagai data terpisah, sedangkan harga satuan saat transaksi tetap dicatat agar riwayat penjualan tidak berubah ketika harga barang diperbarui.
