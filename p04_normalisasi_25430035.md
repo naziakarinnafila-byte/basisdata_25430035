@@ -210,7 +210,6 @@ Gambar ERD diletakkan pada jalur berikut agar dapat ditampilkan di GitHub:
 
 ![ERD Klinik Sehat ZI](screenshot/p04_erd_25430035.png)
 
-> Pastikan file gambar benar-benar tersimpan di `screenshot/p04_erd_25430035.png`. Nama folder dan file harus sama persis, termasuk huruf besar-kecil.
 
 ---
 
