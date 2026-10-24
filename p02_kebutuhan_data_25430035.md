@@ -80,6 +80,7 @@ Pengelolaan data diperlukan agar informasi pasien, pelayanan kesehatan, transaks
 |AB-06|Stok obat tidak boleh menjadi negatif; apabila jumlah obat yang diminta melebihi stok tersedia, pelayanan obat harus ditolak atau ditunda|
 |AB-07|Setiap transaksi pembayaran harus terkait dengan kunjungan pasien dan memiliki nomor pembayaran yang berbeda|
 |AB-08|Data kesehatan pasien hanya dapat diakses oleh petugas yang memiliki kewenangan sesuai dengan perannya|
+|AB-09|Satu resep memuat paling banyak P + 2 = 11 jenis obat|
 
 
 
